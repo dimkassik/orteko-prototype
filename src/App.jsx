@@ -11,6 +11,12 @@ const daysBetween = (from, to) => Math.round((new Date(to) - new Date(from)) / 8
 const fmtDate = (d) => (d ? d.split('-').reverse().join('.') : '—')
 const isOverdue = (r) => ['new', 'assigned', 'in_progress'].includes(r.status) && r.due < TODAY
 const sum = (list) => list.reduce((s, r) => s + amount(r), 0)
+const plural = (n, one, few, many) => {
+  const m10 = n % 10, m100 = n % 100
+  if (m10 === 1 && m100 !== 11) return `${n} ${one}`
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return `${n} ${few}`
+  return `${n} ${many}`
+}
 
 // ---------- состояние (сохраняется в браузере, чтобы демо переживало перезагрузку) ----------
 const STORAGE_KEY = 'orteko-demo-v1'
@@ -107,7 +113,7 @@ function Dashboard({ state, open }) {
             <span className="dot" style={{ background: s.color }} />
             <span className="muted">{s.label}</span>
             <b>{money(sum(s.list))}</b>
-            <span className="muted small">{s.list.length} заявок</span>
+            <span className="muted small">{plural(s.list.length, 'заявка', 'заявки', 'заявок')}</span>
           </div>
         ))}
       </div>
